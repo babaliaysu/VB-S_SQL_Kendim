@@ -1,0 +1,241 @@
+SET
+=== A1. kendim sxemindəki cədvəllər ===
+      table_name       
+-----------------------
+ amenities
+ audit_logs
+ availability_blocks
+ bookings
+ commission_settings
+ complaints
+ conversations
+ favorites
+ listing_amenities
+ listing_nearby_places
+ listing_photos
+ listings
+ messages
+ notifications
+ payments
+ payout_accounts
+ payouts
+ regions
+ reviews
+ users
+ verification_tokens
+ village_highlights
+ village_photos
+ villages
+(24 rows)
+
+=== A2. Hər cədvəldəki qeyd sayı ===
+   cedvel   | count 
+------------+-------
+ users      |    13
+ regions    |    10
+ villages   |    11
+ listings   |    12
+ bookings   |    21
+ payments   |    16
+ payouts    |    10
+ reviews    |    12
+ messages   |    20
+ complaints |    11
+(10 rows)
+
+=== A3. Constraint növləri üzrə say ===
+    novu     | say 
+-------------+-----
+ CHECK       |  42
+ FOREIGN KEY |  35
+ PRIMARY KEY |  24
+ UNIQUE      |  18
+ EXCLUDE     |   2
+(5 rows)
+
+=== B1. İstifadəçilər ===
+ id | first_name | last_name  |         email         | role  | status  
+----+------------+------------+-----------------------+-------+---------
+  1 | Elvin      | Quliyev    | admin@kendim.az       | admin | active
+  2 | Rauf       | Həsənov    | rauf.hasanov@mail.az  | user  | active
+  3 | Səbinə     | Quliyeva   | sabina.q@mail.az      | user  | active
+  4 | Kamran     | Əliyev     | kamran.aliyev@mail.az | user  | active
+  5 | Lalə       | Məmmədova  | lala.m@mail.az        | user  | active
+  6 | Tural      | Nəsirov    | tural.n@mail.az       | user  | active
+  7 | Nərmin     | Əliyeva    | nermin@mail.az        | user  | active
+  8 | Orxan      | Məmmədov   | orxan@mail.az         | user  | active
+  9 | Aysel      | Rzayeva    | aysel.r@mail.az       | user  | active
+ 10 | Fərid      | Babayev    | farid.b@mail.az       | user  | active
+ 11 | Günay      | İsmayılova | gunay.i@mail.az       | user  | active
+ 12 | Murad      | Hüseynov   | murad.h@mail.az       | user  | active
+ 13 | Vüqar      | Cəfərov    | vugar.c@mail.az       | user  | blocked
+(13 rows)
+
+=== B2. Elanlar ===
+ id |       title       | price_per_night | max_guests | status 
+----+-------------------+-----------------+------------+--------
+  1 | Xınalıqda dağ evi |           80.00 |          6 | active
+  2 | Qrızda daş ev     |           60.00 |          4 | active
+  3 | Lahıcda bağ evi   |           60.00 |          5 | active
+  4 | Misgər evi        |           70.00 |          4 | active
+  5 | Kişdə meşə evi    |           90.00 |          6 | active
+  6 | Laza şəlalə evi   |          100.00 |          8 | active
+  7 | Çay bağı evi      |           50.00 |          4 | active
+  8 | İlisuda taxta ev  |           75.00 |          5 | active
+  9 | Car qoz bağı evi  |           55.00 |          4 | active
+ 10 | İstisu termal ev  |           65.00 |          3 | active
+ 11 | Lerikdə dağ evi   |           45.00 |          4 | active
+ 12 | Daşaltı qaya evi  |           85.00 |          6 | hidden
+(12 rows)
+
+=== C1. Elan → kənd → rayon → ev sahibi (4 cədvəl JOIN) ===
+       title       |    kend    |   rayon   |    ev_sahibi    
+-------------------+------------+-----------+-----------------
+ Xınalıqda dağ evi | Xınalıq    | Quba      | Rauf Həsənov
+ Qrızda daş ev     | Qrız       | Quba      | Rauf Həsənov
+ Lahıcda bağ evi   | Lahıc      | İsmayıllı | Səbinə Quliyeva
+ Misgər evi        | Lahıc      | İsmayıllı | Səbinə Quliyeva
+ Kişdə meşə evi    | Kiş        | Şəki      | Kamran Əliyev
+ Laza şəlalə evi   | Laza       | Qəbələ    | Kamran Əliyev
+ Çay bağı evi      | Haftoni    | Lənkəran  | Lalə Məmmədova
+ İlisuda taxta ev  | İlisu      | Qax       | Lalə Məmmədova
+ Car qoz bağı evi  | Car        | Zaqatala  | Tural Nəsirov
+ İstisu termal ev  | İstisu     | Masallı   | Tural Nəsirov
+ Lerikdə dağ evi   | Cəngəmiran | Lerik     | Rauf Həsənov
+ Daşaltı qaya evi  | Daşaltı    | Şuşa      | Səbinə Quliyeva
+(12 rows)
+
+=== C2. Rezervasiya → ödəniş → köçürmə zənciri (1:1 əlaqələr) ===
+ booking | booking_status | amount | commission_amount | payment_status | payout | payout_status 
+---------+----------------+--------+-------------------+----------------+--------+---------------
+       1 | paid_out       | 320.00 |             32.00 | released       | 288.00 | completed
+       2 | paid_out       | 160.00 |             16.00 | released       | 144.00 | completed
+       3 | completed      | 120.00 |             12.00 | held           |        | 
+       4 | paid_out       | 270.00 |             27.00 | released       | 243.00 | completed
+       5 | completed      | 200.00 |             20.00 | held           |        | 
+       6 | paid_out       | 150.00 |             15.00 | released       | 135.00 | completed
+       7 | disputed       | 225.00 |             22.50 | held           |        | 
+       8 | paid_out       | 110.00 |             11.00 | released       |  99.00 | pending
+       9 | in_progress    | 300.00 |             30.00 | held           |        | 
+      10 | paid           | 210.00 |             21.00 | held           |        | 
+      11 | confirmed      |        |                   |                |        | 
+      12 | pending        |        |                   |                |        | 
+      13 | rejected       |        |                   |                |        | 
+      14 | refunded       | 200.00 |              0.00 | refunded       |        | 
+      15 | pending        |        |                   |                |        | 
+      16 | paid_out       | 100.00 |             10.00 | released       |  90.00 | completed
+      17 | paid_out       | 225.00 |             22.50 | released       | 202.50 | completed
+      18 | paid_out       |  90.00 |              9.00 | released       |  81.00 | completed
+      19 | paid_out       | 255.00 |             25.50 | released       | 229.50 | completed
+      20 | paid_out       | 140.00 |             14.00 | released       | 126.00 | failed
+      21 | cancelled      |        |                   |                |        | 
+(21 rows)
+
+=== C3. M:N — hər elanın şəraitləri ===
+       title       |                seraitler                
+-------------------+-----------------------------------------
+ Xınalıqda dağ evi | Kamin, Manqal, Mətbəx, Wi-Fi
+ Qrızda daş ev     | Kamin, Mətbəx
+ Lahıcda bağ evi   | Manqal, Mətbəx, Parkinq, Wi-Fi
+ Misgər evi        | Wi-Fi, İsti su
+ Kişdə meşə evi    | Mətbəx, Parkinq, Uşaq meydançası, Wi-Fi
+ Laza şəlalə evi   | Hovuz, Manqal, Mətbəx, Parkinq, Wi-Fi
+ Çay bağı evi      | Kondisioner, Wi-Fi
+ İlisuda taxta ev  | Manqal
+ Car qoz bağı evi  | Parkinq
+ İstisu termal ev  | İsti su
+(10 rows)
+
+=== C4. View: elanların orta reytinqi ===
+ listing_id |       title       |  village   | avg_rating | review_count | status 
+------------+-------------------+------------+------------+--------------+--------
+          1 | Xınalıqda dağ evi | Xınalıq    |       5.00 |            1 | active
+          2 | Qrızda daş ev     | Qrız       |            |            0 | active
+          3 | Lahıcda bağ evi   | Lahıc      |       4.00 |            1 | active
+          4 | Misgər evi        | Lahıc      |       5.00 |            1 | active
+          5 | Kişdə meşə evi    | Kiş        |       5.00 |            1 | active
+          6 | Laza şəlalə evi   | Laza       |       4.00 |            1 | active
+          7 | Çay bağı evi      | Haftoni    |       3.50 |            2 | active
+          8 | İlisuda taxta ev  | İlisu      |       5.00 |            1 | active
+          9 | Car qoz bağı evi  | Car        |       5.00 |            1 | active
+         10 | İstisu termal ev  | İstisu     |            |            0 | active
+         11 | Lerikdə dağ evi   | Cəngəmiran |       4.00 |            1 | active
+         12 | Daşaltı qaya evi  | Daşaltı    |       3.00 |            1 | hidden
+(12 rows)
+
+=== C5. View: rezervasiyanın gecə sayı və ümumi məbləği ===
+ booking_id |      listing      |   guest_name   |  check_in  | check_out  | nights | price_per_night | total_amount |  status   
+------------+-------------------+----------------+------------+------------+--------+-----------------+--------------+-----------
+          1 | Xınalıqda dağ evi | Nərmin Əliyeva | 2026-09-05 | 2026-09-09 |      4 |           80.00 |       320.00 | paid_out
+          2 | Xınalıqda dağ evi | Orxan Məmmədov | 2026-09-12 | 2026-09-14 |      2 |           80.00 |       160.00 | paid_out
+          3 | Lahıcda bağ evi   | Nərmin Əliyeva | 2026-09-20 | 2026-09-22 |      2 |           60.00 |       120.00 | completed
+          4 | Kişdə meşə evi    | Aysel Rzayeva  | 2026-10-01 | 2026-10-04 |      3 |           90.00 |       270.00 | paid_out
+          5 | Laza şəlalə evi   | Fərid Babayev  | 2026-10-10 | 2026-10-12 |      2 |          100.00 |       200.00 | completed
+(5 rows)
+
+=== C6. Trigger nəticəsi: 3 şikayətdən sonra 12 nömrəli elan gizlədilib (BR-26) ===
+ id |      title       | status |      action       |                 details                 
+----+------------------+--------+-------------------+-----------------------------------------
+ 12 | Daşaltı qaya evi | hidden | auto_hide_listing | {"rule": "BR-26", "open_complaints": 3}
+(1 row)
+
+=== D1. UNIQUE: təkrar email ===
+psql:/tmp/validation.sql:84: ERROR:  duplicate key value violates unique constraint "uq_users_email"
+DETAIL:  Key (email)=(nermin@mail.az) already exists.
+=== D2. NOT NULL: soyad boş ===
+psql:/tmp/validation.sql:88: ERROR:  null value in column "last_name" of relation "users" violates not-null constraint
+DETAIL:  Failing row contains (15, Test, null, test@mail.az, +994500000098, x, user, active, null, null, 2026-11-18 03:59:05.575555+04, 2026-11-18 03:59:05.575555+04).
+=== D3. CHECK: mənfi qiymət ===
+psql:/tmp/validation.sql:92: ERROR:  new row for relation "listings" violates check constraint "chk_listings_price"
+DETAIL:  Failing row contains (13, 2, 1, Test, null, -10.00, 2, 1, f, f, Test, 41.100000, 48.100000, 0, active, 2026-11-18 03:59:05.575914+04).
+=== D4. CHECK: reytinq 1–5 aralığında olmalıdır ===
+psql:/tmp/validation.sql:95: ERROR:  new row for relation "reviews" violates check constraint "chk_reviews_rating"
+DETAIL:  Failing row contains (1, 1, 7, Mənzərə möhtəşəm idi, ev sahibi çox qonaqpərvərdir., visible, 2026-09-10 18:00:00+04).
+=== D5. FOREIGN KEY: mövcud olmayan kənd ===
+psql:/tmp/validation.sql:99: ERROR:  insert or update on table "listings" violates foreign key constraint "listings_village_id_fkey"
+DETAIL:  Key (village_id)=(999) is not present in table "villages".
+=== D6. FOREIGN KEY RESTRICT: rezervasiyası olan elanı fiziki silmək ===
+psql:/tmp/validation.sql:102: ERROR:  update or delete on table "listings" violates foreign key constraint "bookings_listing_id_fkey" on table "bookings"
+DETAIL:  Key (id)=(1) is still referenced from table "bookings".
+=== D7. CHECK: çıxış tarixi girişdən əvvəl ===
+psql:/tmp/validation.sql:106: ERROR:  new row for relation "bookings" violates check constraint "chk_bookings_dates"
+DETAIL:  Failing row contains (22, 3, 9, 2027-03-10, 2027-03-05, 2, 60.00, pending, 2026-11-19 03:59:05.578368+04, null, null, null, 2026-11-18 03:59:05.578368+04).
+=== D8. EXCLUDE: aktiv rezervasiyalarla tarix toqquşması (BR-13) ===
+psql:/tmp/validation.sql:110: ERROR:  conflicting key value violates exclusion constraint "ex_bookings_no_overlap"
+DETAIL:  Key (listing_id, daterange(check_in, check_out, '[)'::text))=(1, [2026-09-07,2026-09-10)) conflicts with existing key (listing_id, daterange(check_in, check_out, '[)'::text))=(1, [2026-09-05,2026-09-09)).
+=== D9. CHECK num_nonnulls: şikayətin iki hədəfi (BR-25) ===
+psql:/tmp/validation.sql:114: ERROR:  new row for relation "complaints" violates check constraint "chk_complaints_one_target"
+DETAIL:  Failing row contains (12, 7, 1, 1, null, null, test, null, open, null, null, null, 2026-11-18 03:59:05.579313+04).
+=== D10. Partial UNIQUE index: ikinci aktiv ödəniş hesabı (BR-29) ===
+psql:/tmp/validation.sql:118: ERROR:  duplicate key value violates unique constraint "ux_payout_active"
+DETAIL:  Key (user_id)=(2) already exists.
+=== D11. DEFAULT: yeni elanın statusu avtomatik active, view_count 0 ===
+BEGIN
+ id | status | view_count | utilities_included | created_at_doldu 
+----+--------+------------+--------------------+------------------
+ 15 | active |          0 | f                  | t
+(1 row)
+
+INSERT 0 1
+ROLLBACK
+=== E1. Trigger BR-12: istifadəçi öz elanını rezerv edə bilməz ===
+psql:/tmp/validation.sql:130: ERROR:  BR-12: istifadəçi öz elanını rezerv edə bilməz
+CONTEXT:  PL/pgSQL function fn_check_booking() line 14 at RAISE
+=== E2. Trigger BR-11: qonaq sayı tutumu keçir ===
+psql:/tmp/validation.sql:134: ERROR:  BR-11: qonaq sayı (5) elanın tutumunu (3) keçir
+CONTEXT:  PL/pgSQL function fn_check_booking() line 17 at RAISE
+=== E3. Trigger BR-04: bloklanmış istifadəçi rezervasiya edə bilməz ===
+psql:/tmp/validation.sql:138: ERROR:  BR-04: bloklanmış istifadəçi rezervasiya edə bilməz
+CONTEXT:  PL/pgSQL function fn_check_booking() line 20 at RAISE
+=== E4. Trigger BR-10: bağlı tarixlərə rezervasiya ===
+psql:/tmp/validation.sql:142: ERROR:  BR-10: seçilmiş tarixlər ev sahibi tərəfindən bağlanıb
+CONTEXT:  PL/pgSQL function fn_check_booking() line 30 at RAISE
+=== E5. Trigger BR-21: tamamlanmamış rezervasiyaya rəy ===
+psql:/tmp/validation.sql:145: ERROR:  BR-21: rəy yalnız tamamlanmış rezervasiyaya yazıla bilər (status=confirmed)
+CONTEXT:  PL/pgSQL function fn_check_review() line 6 at RAISE
+=== E6. Trigger BR-23: söhbətin iştirakçısı olmayan mesaj yazır ===
+psql:/tmp/validation.sql:148: ERROR:  BR-23: istifadəçi (id=9) bu söhbətin iştirakçısı deyil
+CONTEXT:  PL/pgSQL function fn_check_message_sender() line 7 at RAISE
+=== E7. Trigger BR-09: aktiv rezervasiyası olan elanı silmək (soft delete) ===
+psql:/tmp/validation.sql:151: ERROR:  BR-09: elanın (id=5) aktiv rezervasiyası var, silinə bilməz
+CONTEXT:  PL/pgSQL function fn_prevent_listing_delete() line 8 at RAISE
